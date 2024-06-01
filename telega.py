@@ -1,5 +1,7 @@
 import json
 import logging
+from datetime import date
+import webbot
 
 from telegram import Update#, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton, ParseMode
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -26,7 +28,13 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if authenticate(update):
-        await update.message.reply_text("This is a time command")
+        try:
+            time = webbot.main()
+            today = date.today().strftime("%d.%m")
+            response = "Cheap electricity is between the hours {} and {}.".format(time[today][0], time[today][1])
+        except Exception as e:
+            response = "There was an error in retrieving data: {}".format(e)
+        await update.message.reply_text(response)
     else:
         await update.message.reply_text("""Sadly I don't talk to strangers yet...""")
 
