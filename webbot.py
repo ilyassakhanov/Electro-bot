@@ -58,17 +58,18 @@ def main():
 
     intervals = find_intervals(timepage)
 
-    print(dates)
-    print(intervals)
-
     final_response ={
         dates[0]: [intervals[1], intervals[3]],
         dates[1]: [intervals[6], intervals[7]]
     }
-    print(final_response)
-
     driver.quit()
+    return final_response
+
+    
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print("There was an error in retrieving data: {}".format(e))
