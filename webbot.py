@@ -1,6 +1,7 @@
 import re
 import time
 import json
+from datetime import date
 from selenium import webdriver
 import selenium.webdriver.chrome.service as service
 from selenium.webdriver.common.by import By
@@ -9,63 +10,83 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 
+
 def get_timepage(driver, creds):
-    #Returns an html page with times
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "login_name"))).send_keys(creds["login"])
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "login_password"))).send_keys(creds["password"], Keys.ENTER)
+    # Returns an html page with times
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.ID, "login_name"))).send_keys(creds["login"])
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.ID, "login_password"))).send_keys(creds["password"], Keys.ENTER)
     # waits till JS loads
-    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, "component-hdo-dnes")))
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.ID, "component-hdo-dnes")))
     page = driver.page_source
     soup = BeautifulSoup(page, "html.parser")
     return soup
 
 
-
 def find_dates(soup):
-    data_dates = soup.find_all(attrs={'class':'blue-text pull-left'})
+    data_dates = soup.find_all(attrs={'class': 'blue-text pull-left'})
 
     structured_dates = []
     for data_date in data_dates:
-        structured_dates.append(re.search(r'.* (\d\d.\d\d)\.<\/div>', str(data_date)).group(1))
+        structured_dates.append(
+            re.search(r'.* (\d\d.\d\d)\.<\/div>', str(data_date)).group(1))
     return structured_dates
 
 
 def find_intervals(soup):
-    data =soup.find_all(attrs={'class':'span-overflow'})
+    data = soup.find_all(attrs={'class': 'span-overflow'})
     time_intervals = []
     for span in data:
         span = str(span)
-        interval = re.search(r'.*title=\"(\d\d:\d\d - \d\d:\d\d)\"', span).group(1)
+        interval = re.search(
+            r'.*title=\"(\d\d:\d\d - \d\d:\d\d)\"', span).group(1)
         time_intervals.append(interval)
-    
+
     return time_intervals
 
 
+def cache_file(final_response):
+    with open('times.json', 'w') as f:
+        json.dump(final_response, f)
 
+
+def read_file():
+    f = open('times.json')
+    final_response = json.load(f)
+    return final_response
 
 
 def main():
     with open('credentials.json') as f:
         creds = json.load(f)
-    
-    service = webdriver.ChromeService(executable_path = './chromedriver')
-    driver = webdriver.Chrome(service=service)
-    driver.get('https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
-    time.sleep(3)
 
-    timepage = get_timepage(driver, creds)
-    dates = find_dates(timepage)
+    # Don't launch selenium if result is cached
+    final_response = read_file()
+    today = date.today().strftime("%d.%m")
+    if today in final_response:
+        return final_response
+    else:
 
-    intervals = find_intervals(timepage)
+        service = webdriver.ChromeService(executable_path='./chromedriver')
+        driver = webdriver.Chrome(service=service)
+        driver.get(
+            'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
+        time.sleep(3)
 
-    final_response ={
-        dates[0]: [intervals[1], intervals[3]],
-        dates[1]: [intervals[6], intervals[7]]
-    }
-    driver.quit()
-    return final_response
+        timepage = get_timepage(driver, creds)
+        dates = find_dates(timepage)
 
-    
+        intervals = find_intervals(timepage)
+
+        final_response = {
+            dates[0]: [intervals[1], intervals[3]],
+            dates[1]: [intervals[7], intervals[8]]
+        }
+        driver.quit()
+        cache_file(final_response)
+        return final_response
 
 
 if __name__ == '__main__':

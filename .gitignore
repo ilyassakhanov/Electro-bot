@@ -1,3 +1,5 @@
 venv
 credentials.json
 chromedriver
+config.json
+__pycache__
