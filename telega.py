@@ -3,7 +3,7 @@ import logging
 from datetime import date
 import webbot
 
-from telegram import Update#, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton, ParseMode
+from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 logger = logging.getLogger(__name__)
