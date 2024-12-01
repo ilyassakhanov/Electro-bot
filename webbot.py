@@ -7,15 +7,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import ChromeOptions
 from bs4 import BeautifulSoup
 
 
 def get_timepage(driver, creds):
     # Returns an html page with times
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-        (By.ID, "login_name"))).send_keys(creds["login"])
+        (By.ID, "username"))).send_keys(creds["login"])
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-        (By.ID, "login_password"))).send_keys(creds["password"], Keys.ENTER)
+        (By.ID, "password"))).send_keys(creds["password"], Keys.ENTER)
     # waits till JS loads
     WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.ID, "component-hdo-dnes")))
@@ -56,10 +57,13 @@ def read_file():
     final_response = json.load(f)
     return final_response
 
-
-def main():
+def get_creds():
     with open('credentials.json') as f:
         creds = json.load(f)
+    return creds
+
+def main():
+    creds = get_creds()
 
     # Don't launch selenium if result is cached
     final_response = read_file()
@@ -68,8 +72,11 @@ def main():
         return final_response
     else:
 
+        options = ChromeOptions()
+        options.add_argument("--headless")  # Run Chrome in headless mode
+
         service = webdriver.ChromeService(executable_path='./chromedriver')
-        driver = webdriver.Chrome(service=service)
+        driver = webdriver.Chrome(service=service, options=options)
         driver.get(
             'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
         time.sleep(3)
