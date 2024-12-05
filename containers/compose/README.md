@@ -4,6 +4,7 @@
 ```
 This is a usage for using this app with docker-compose
 ```
+
 # Used software
 
 ```
@@ -14,4 +15,10 @@ docker 27.2.0
 
 ```
 docker-compose up -d
+```
+
+## Removal
+
+```
+docker compose down
 ```
