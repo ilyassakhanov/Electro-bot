@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import FirefoxOptions
 # from selenium.webdriver import ChromeOptions
 from bs4 import BeautifulSoup
+from retrieve_secrets import get_secret as get_creds
 
 
 def get_timepage(driver, creds):
@@ -58,13 +59,8 @@ def read_file():
     final_response = json.load(f)
     return final_response
 
-def get_creds():
-    with open('credentials.json') as f:
-        creds = json.load(f)
-    return creds
 
 def main():
-    creds = get_creds()
 
     # Don't launch selenium if result is cached
     final_response = read_file()
@@ -73,14 +69,13 @@ def main():
         return final_response
     else:
 
+        # Getting credentials from Secret Manager
+        creds = get_creds()
 
         options = FirefoxOptions()
         options.add_argument("--headless")  # Run Chrome in headless mode
-
-
-        # service = webdriver.ChromeService(executable_path='./chromedriver')
-        # driver = webdriver.Chrome(service=service, options=options)
-        driver = webdriver.Remote(command_executor='http://selenium:4444/wd/hub', options=options)
+        driver = webdriver.Remote(
+            command_executor='http://selenium:4444/wd/hub', options=options)
         driver.get(
             'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
         time.sleep(3)

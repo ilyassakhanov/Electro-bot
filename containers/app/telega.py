@@ -1,16 +1,14 @@
 import json
 import logging
 from datetime import date
-import webbot
 
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-logger = logging.getLogger(__name__)
+import webbot
+from retrieve_secrets import get_secret
 
-with open('credentials.json') as f:
-    creds = json.load(f)
-apikey = creds["apikey"]
+logger = logging.getLogger(__name__)
 
 
 with open('config.json') as f:
@@ -29,7 +27,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if authenticate(update):
         try:
-            time = webbot.main()
+            time = webbot.main(context.bot_data)
             today = date.today().strftime("%d.%m")
             response = "Cheap electricity is between the hours {} and {}.".format(time[today][0], time[today][1])
         except Exception as e:
@@ -89,7 +87,13 @@ async def error(update: Update, context: ContextTypes. DEFAULT_TYPE) :
 
 if __name__ == "__main__":
     print("Starting...")
-    app = Application.builder().token(apikey).build()
+    
+    # Retrieving secrets from SecretManager
+    creds = get_secret()
+
+    app = Application.builder().token(creds['apikey']).build()
+
+    app.bot_data.update(creds)    
 
     #Commands
     app.add_handler(CommandHandler('start', start_command))
