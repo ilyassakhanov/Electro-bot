@@ -60,17 +60,19 @@ def read_file():
     return final_response
 
 
-def main():
-
+def main(creds):
+    """
+    Main function for retrieving times from web portal
+    
+    :in dict
+    Credentials from Secret Manager 
+    """
     # Don't launch selenium if result is cached
     final_response = read_file()
     today = date.today().strftime("%d.%m")
     if today in final_response:
         return final_response
     else:
-
-        # Getting credentials from Secret Manager
-        creds = get_creds()
 
         options = FirefoxOptions()
         options.add_argument("--headless")  # Run Chrome in headless mode
