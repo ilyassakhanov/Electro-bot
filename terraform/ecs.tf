@@ -60,16 +60,16 @@ resource "aws_security_group" "ecs_sg" {
 }
 
 
-# resource "aws_ecs_service" "main" {
-#  cluster         = aws_ecs_cluster.my_app_cluster.id
-#  desired_count   = 1
-#  launch_type     = "FARGATE"
-#  name            = "${var.project-name}-service"
-#  task_definition = aws_ecs_task_definition.my_task.arn
+resource "aws_ecs_service" "main" {
+ cluster         = aws_ecs_cluster.my_app_cluster.id
+ desired_count   = 1
+ launch_type     = "FARGATE"
+ name            = "${var.project-name}-service"
+ task_definition = aws_ecs_task_definition.my_task.arn
 
-#  network_configuration {
-#    subnets          = [aws_default_subnet.public_subnet1.id, aws_default_subnet.public_subnet2.id] # Replace with your subnet IDs
-#    security_groups  = [aws_security_group.ecs_sg.id]                                               # Replace with your security group
-#    assign_public_ip = true     # Assign public IP if needed
-#  }
-# }
+ network_configuration {
+   subnets          = [aws_default_subnet.public_subnet1.id, aws_default_subnet.public_subnet2.id] # Replace with your subnet IDs
+   security_groups  = [aws_security_group.ecs_sg.id]                                               # Replace with your security group
+   assign_public_ip = true     # Assign public IP if needed
+ }
+}
