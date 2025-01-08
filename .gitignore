@@ -4,6 +4,6 @@ chromedriver
 config.json
 __pycache__
 .terraform
-.terraform.tfstate
+terraform.tfstate
 .terraform.lock.hcl
 terraform.tfstate.backup
