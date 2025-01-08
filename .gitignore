@@ -3,3 +3,7 @@ credentials.json
 chromedriver
 config.json
 __pycache__
+.terraform
+.terraform.tfstate
+.terraform.lock.hcl
+terraform.tfstate.backup
