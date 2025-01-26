@@ -1,11 +1,11 @@
 provider "aws" {
-  region = "us-east-2"
+  region = var.region
 }
 
 
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "ilyas-state2"
+  bucket = "sakhanov-state"
 
   # Prevent accidental deletion of this S3 bucket
   lifecycle {

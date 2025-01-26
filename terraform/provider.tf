@@ -7,9 +7,9 @@ terraform {
  }
 
   backend "s3" {
-   bucket = "ilyas-state2"
+   bucket = "sakhanov-state"
    key    = "state"
-   region = "us-east-2"
+   region = "eu-central-1"
  }
 
 }
