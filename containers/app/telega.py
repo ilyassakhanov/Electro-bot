@@ -8,9 +8,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 logger = logging.getLogger(__name__)
 
-with open('credentials.json') as f:
-    creds = json.load(f)
-apikey = creds["apikey"]
+with open('/cfg/apikey') as f:
+    apikey = f.read()[:-1]
 
 
 with open('config.json') as f:

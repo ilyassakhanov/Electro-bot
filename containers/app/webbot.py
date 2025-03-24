@@ -58,10 +58,20 @@ def read_file():
     final_response = json.load(f)
     return final_response
 
+
 def get_creds():
-    with open('credentials.json') as f:
-        creds = json.load(f)
+    with open('/cfg/login') as f:
+        login = f.read()
+
+    with open('/cfg/password') as f:
+        password = f.read()
+
+    creds = {
+        "login": login[:-1],
+        "password": password[:-1]
+    }
     return creds
+
 
 def main():
     creds = get_creds()
@@ -73,14 +83,13 @@ def main():
         return final_response
     else:
 
-
         options = FirefoxOptions()
         options.add_argument("--headless")  # Run Chrome in headless mode
 
-
         # service = webdriver.ChromeService(executable_path='./chromedriver')
         # driver = webdriver.Chrome(service=service, options=options)
-        driver = webdriver.Remote(command_executor='http://selenium:4444/wd/hub', options=options)
+        driver = webdriver.Remote(
+            command_executor='http://selenium:4444/wd/hub', options=options)
         driver.get(
             'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
         time.sleep(3)
