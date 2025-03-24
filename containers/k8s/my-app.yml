@@ -18,10 +18,10 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-          - name: cfg
-            mountPath: /cfg
+          - name: creds
+            mountPath: /creds
             readOnly: true
       volumes:
-      - name: cfg
+      - name: creds
         secret:
           secretName: my-app-credentials
