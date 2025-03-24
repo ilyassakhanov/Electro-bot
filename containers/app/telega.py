@@ -12,11 +12,11 @@ with open('/creds/apikey') as f:
     apikey = f.read()[:-1]
 
 
-with open('config.json') as f:
-    config = json.load(f)
-botname = config["botname"]
+with open('/config/botname') as f:
+    botname = f.read()
 
-#Commands
+# Commands
+
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if authenticate(update):
@@ -30,7 +30,8 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             time = webbot.main()
             today = date.today().strftime("%d.%m")
-            response = "Cheap electricity is between the hours {} and {}.".format(time[today][0], time[today][1])
+            response = "Cheap electricity is between the hours {} and {}.".format(
+                time[today][0], time[today][1])
         except Exception as e:
             response = "There was an error in retrieving data: {}".format(e)
         await update.message.reply_text(response)
@@ -44,24 +45,30 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("""Sadly I don't talk to strangers yet...""")
 
-#Logic
+# Logic
+
 
 def authenticate(update):
     user = update.message.from_user['username']
-    if user in config['users']:
+
+    with open('/config/users') as f:
+        users = f.read()
+
+    if user in users:
         return True
     else:
         return False
 
-def handle_response(text:str, grouptype = 'group') -> str:
+
+def handle_response(text: str, grouptype='group') -> str:
     if grouptype == 'group':
         return "Let's speak privately"
     else:
-         return "The only useful command is /start or /times"
+        return "The only useful command is /start or /times"
 
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) :
-    #Reply only to allowed users
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Reply only to allowed users
     if authenticate(update):
         message_type: str = update.message.chat.type
         text: str = update.message.text
@@ -77,12 +84,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) :
         else:
             response: str = handle_response(text, 'notgroup')
 
-        print('Bot:',response)
+        print('Bot:', response)
         await update.message.reply_text(response)
     else:
         update.message.reply_text("")
 
-async def error(update: Update, context: ContextTypes. DEFAULT_TYPE) :
+
+async def error(update: Update, context: ContextTypes. DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 
@@ -90,15 +98,15 @@ if __name__ == "__main__":
     print("Starting...")
     app = Application.builder().token(apikey).build()
 
-    #Commands
+    # Commands
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('times', time_command))
     app.add_handler(CommandHandler('help', help_command))
 
-    #Messages
+    # Messages
     app.add_handler(MessageHandler(filters. TEXT, handle_message))
 
-    #Errors
+    # Errors
 
     app.add_error_handler(error)
 

@@ -21,7 +21,14 @@ spec:
           - name: creds
             mountPath: /creds
             readOnly: true
+          - name: config
+            mountPath: "/config"
+            readOnly: true 
       volumes:
       - name: creds
         secret:
           secretName: my-app-credentials
+      - name: config
+        configMap:
+          name: my-app-config
+
