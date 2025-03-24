@@ -8,7 +8,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 logger = logging.getLogger(__name__)
 
-with open('/cfg/apikey') as f:
+with open('/creds/apikey') as f:
     apikey = f.read()[:-1]
 
 

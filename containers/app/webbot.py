@@ -60,10 +60,10 @@ def read_file():
 
 
 def get_creds():
-    with open('/cfg/login') as f:
+    with open('/creds/login') as f:
         login = f.read()
 
-    with open('/cfg/password') as f:
+    with open('/creds/password') as f:
         password = f.read()
 
     creds = {
