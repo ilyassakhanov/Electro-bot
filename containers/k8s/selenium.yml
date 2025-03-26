@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: selenium-webdriver
+  namespace: my-app
 spec:
   selector:
     matchLabels:

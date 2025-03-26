@@ -49,12 +49,17 @@ def find_intervals(soup):
 
 
 def cache_file(final_response):
-    with open('times.json', 'w') as f:
+    with open('/app/data/times.json', 'w') as f:
         json.dump(final_response, f)
 
 
 def read_file():
-    f = open('times.json')
+    # Return empty list if file is not found
+    try:
+        f = open('/app/data/times.json')
+    except FileNotFoundError:
+        return {}
+    # Pass cached data if file was found
     final_response = json.load(f)
     return final_response
 

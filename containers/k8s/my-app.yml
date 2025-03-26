@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-app
+  namespace: my-app
 spec:
   replicas: 1
   selector:
@@ -22,8 +23,10 @@ spec:
             mountPath: /creds
             readOnly: true
           - name: config
-            mountPath: "/config"
+            mountPath: /config
             readOnly: true 
+          - mountPath: /app/data
+            name: my-app-data
       volumes:
       - name: creds
         secret:
@@ -31,4 +34,7 @@ spec:
       - name: config
         configMap:
           name: my-app-config
+      - name: my-app-data
+        persistentVolumeClaim:
+          claimName: my-app-storage
 
