@@ -49,19 +49,34 @@ def find_intervals(soup):
 
 
 def cache_file(final_response):
-    with open('times.json', 'w') as f:
+    with open('/app/data/times.json', 'w') as f:
         json.dump(final_response, f)
 
 
 def read_file():
-    f = open('times.json')
+    # Return empty list if file is not found
+    try:
+        f = open('/app/data/times.json')
+    except FileNotFoundError:
+        return {}
+    # Pass cached data if file was found
     final_response = json.load(f)
     return final_response
 
+
 def get_creds():
-    with open('credentials.json') as f:
-        creds = json.load(f)
+    with open('/creds/login') as f:
+        login = f.read()
+
+    with open('/creds/password') as f:
+        password = f.read()
+
+    creds = {
+        "login": login[:-1],
+        "password": password[:-1]
+    }
     return creds
+
 
 def main():
     creds = get_creds()
@@ -73,14 +88,13 @@ def main():
         return final_response
     else:
 
-
         options = FirefoxOptions()
         options.add_argument("--headless")  # Run Chrome in headless mode
 
-
         # service = webdriver.ChromeService(executable_path='./chromedriver')
         # driver = webdriver.Chrome(service=service, options=options)
-        driver = webdriver.Remote(command_executor='http://selenium:4444/wd/hub', options=options)
+        driver = webdriver.Remote(
+            command_executor='http://selenium:4444/wd/hub', options=options)
         driver.get(
             'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
         time.sleep(3)
@@ -92,7 +106,7 @@ def main():
 
         final_response = {
             dates[0]: [intervals[1], intervals[3]],
-            dates[1]: [intervals[7], intervals[8]]
+            dates[1]: [intervals[6], intervals[7]]
         }
         driver.quit()
         cache_file(final_response)

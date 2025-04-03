@@ -1,3 +1,4 @@
 /app/credentials.json
-/app/credentials.example.json
+/app/credentials.json.example
 /app/config.example.json
+/app/config.json
