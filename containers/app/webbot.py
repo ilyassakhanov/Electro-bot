@@ -106,7 +106,7 @@ def main():
 
         final_response = {
             dates[0]: [intervals[1], intervals[3]],
-            dates[1]: [intervals[7], intervals[8]]
+            dates[1]: [intervals[6], intervals[7]]
         }
         driver.quit()
         cache_file(final_response)
