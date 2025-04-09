@@ -13,6 +13,17 @@ spec:
       labels:
         app: my-app
     spec:
+      initContainers:
+      - name: wait-4-selenium
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+        - >
+          until nc -z selenium:4444; do
+            echo "Waiting for selenium container to come up...";
+            sleep 5;
+          done;
       containers:
       - name: my-app
         image: ilyassakhanov/my-app
