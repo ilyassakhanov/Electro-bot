@@ -27,8 +27,6 @@ spec:
       containers:
       - name: my-app
         image: ilyassakhanov/my-app
-        ports:
-        - containerPort: 8080
         volumeMounts:
           - name: creds
             mountPath: /creds
