@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-app.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "my-app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "my-app.name" . }}
+    spec:
+      initContainers:
+      - name: wait-4-selenium
+        image: busybox
+        command:
+          - /bin/sh
+          - -c
+          - >
+            until nc -z {{ .Values.selenium.service.name }}:{{ .Values.selenium.service.port }}; do
+              echo "Waiting for selenium container to come up...";
+              sleep 5;
+            done;
+      containers:
+      - name: {{ include "my-app.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        volumeMounts:
+          - name: creds
+            mountPath: /creds
+            readOnly: true
+          - name: config
+            mountPath: /config
+            readOnly: true 
+          - name: my-app-data
+            mountPath: /app/data
+      volumes:
+      - name: creds
+        secret:
+          secretName: {{ .Values.secretName }}
+      - name: config
+        configMap:
+          name: {{ .Values.configMapName }}
+      - name: my-app-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.claimName }}
