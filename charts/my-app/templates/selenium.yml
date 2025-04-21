@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-app.selenium.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: selenium
+  replicas: {{ .Values.selenium.replicaCount | default 1 }}
+  template:
+    metadata:
+      labels:
+        app: selenium
+    spec:
+      containers:
+      - name: selenium-firefox
+        image: "{{ .Values.selenium.image.repository }}:{{ .Values.selenium.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.selenium.service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.selenium.service.name | default "selenium" }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: selenium
+  ports:
+  - protocol: TCP
+    port: {{ .Values.selenium.service.port }} # TODO maybe remove this variable, not needed
+    targetPort: {{ .Values.selenium.service.port }}
