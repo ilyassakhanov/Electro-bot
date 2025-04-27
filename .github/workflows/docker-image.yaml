@@ -25,6 +25,10 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - name: Generate timestamp
+      id: ts
+      run: export "TIMESTAMP=$(date +%s)"
+
     # Build and push
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
@@ -32,4 +36,4 @@ jobs:
         context: containers/               
         platforms: linux/amd64,linux/arm64
         push: true 
-        tags: ilyassakhanov/my-app:$(date +%s)
+        tags: ilyassakhanov/my-app:${{ env.TIMESTAMP }}
