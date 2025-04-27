@@ -27,7 +27,7 @@ jobs:
 
     - name: Generate timestamp
       id: ts
-      run: export "TIMESTAMP=$(date +%s)"
+      run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
 
     # Build and push
     - name: Build and push Docker image
@@ -36,4 +36,4 @@ jobs:
         context: containers/               
         platforms: linux/amd64,linux/arm64
         push: true 
-        tags: my-app:${{ env.TIMESTAMP }}
+        tags: ilyassakhanov/my-app:${{ env.TIMESTAMP }}
