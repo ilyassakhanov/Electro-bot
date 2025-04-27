@@ -36,4 +36,4 @@ jobs:
         context: containers/               
         platforms: linux/amd64,linux/arm64
         push: true 
-        tags: ilyassakhanov/my-app:${{ env.TIMESTAMP }}
+        tags: my-app:${{ env.TIMESTAMP }}
