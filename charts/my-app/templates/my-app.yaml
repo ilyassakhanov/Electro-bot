@@ -27,6 +27,13 @@ spec:
       containers:
       - name: {{ include "my-app.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
         volumeMounts:
           - name: creds
             mountPath: /creds

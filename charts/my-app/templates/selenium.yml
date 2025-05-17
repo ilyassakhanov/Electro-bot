@@ -16,6 +16,13 @@ spec:
       containers:
       - name: selenium-firefox
         image: "{{ .Values.selenium.image.repository }}:{{ .Values.selenium.image.tag }}"
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "400m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
         ports:
         - containerPort: {{ .Values.selenium.service.port }}
 ---
