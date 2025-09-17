@@ -4,3 +4,5 @@ chromedriver
 config.json
 config.yaml
 __pycache__
+.terraform
+.terraform.lock.hcl
