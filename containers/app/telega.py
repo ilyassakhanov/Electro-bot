@@ -51,7 +51,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def authenticate(update):
     user = update.message.from_user['username']
 
-    with open('/config/users') as f:
+    with open('/creds/users') as f:
         users = f.read()
 
     if user in users:
