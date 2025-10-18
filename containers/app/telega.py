@@ -52,7 +52,10 @@ def authenticate(update):
     user = update.message.from_user['username']
 
     with open('/creds/users') as f:
-        users = f.read()
+        # single string of all users
+        raw_users = f.read()
+
+    users = raw_users.split(",")
 
     if user in users:
         return True
