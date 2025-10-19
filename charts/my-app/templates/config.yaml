@@ -4,5 +4,4 @@ metadata:
   name: my-app-config
   namespace: my-app
 data:
-  botname: "Your-telegram-bot-name"
-  users: allowed-user1, allowed-user-2,allowed-user-3
+  botname: {{ .Values.config.botname }}
