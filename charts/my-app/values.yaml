@@ -131,3 +131,6 @@ pvc:
   claimName: my-app-storage
   accessMode: ReadWriteOncePod
   storage: 5Mi
+
+config:
+  botname: PREelectro_bot

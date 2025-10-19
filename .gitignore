@@ -2,5 +2,4 @@ venv
 credentials.json
 chromedriver
 config.json
-config.yaml
 __pycache__
