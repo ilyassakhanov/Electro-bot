@@ -53,7 +53,7 @@ def authenticate(update):
 
     with open('/creds/users') as f:
         # single string of all users
-        raw_users = f.read()
+        raw_users = f.read().splitlines()[0]
 
     users = raw_users.split(",")
 
