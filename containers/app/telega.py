@@ -28,7 +28,11 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if authenticate(update):
         try:
-            time = webbot.main()
+            time = webbot.check_cache()
+            # Check if cached reponse is good
+            if not time:
+                await update.message.reply_text("""Fetching data from PRE...""")
+                time = webbot.fetch_data()
             today = date.today().strftime("%d.%m")
             response = "Cheap electricity is between the hours {} and {}.".format(
                 time[today][0], time[today][1])

@@ -3,9 +3,10 @@
 replicaCount: 1
 
 image:
-  repository: ilyassakhanov/my-app
-  pullPolicy: IfNotPresent
-  # Overrides the image tag; defaults to the chart appVersion.
+  repository: ilyassakhanov/my-app 
+  # This sets the pull policy for images.
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
   tag: "1767466436"
 
 imagePullSecrets: []

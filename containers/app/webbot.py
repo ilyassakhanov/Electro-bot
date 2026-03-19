@@ -78,43 +78,38 @@ def get_creds():
     return creds
 
 
-def main():
-    creds = get_creds()
+def check_cache():
 
-    # Don't launch selenium if result is cached
-    final_response = read_file()
+    # Check cache before
+    cached_data = read_file()
     today = date.today().strftime("%d.%m")
-    if today in final_response:
-        return final_response
+    if today in cached_data:
+        return cached_data
     else:
-
-        options = FirefoxOptions()
-        options.add_argument("--headless")  # Run Chrome in headless mode
-
-        # service = webdriver.ChromeService(executable_path='./chromedriver')
-        # driver = webdriver.Chrome(service=service, options=options)
-        driver = webdriver.Remote(
-            command_executor='http://selenium:4444/wd/hub', options=options)
-        driver.get(
-            'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
-        time.sleep(3)
-
-        timepage = get_timepage(driver, creds)
-        dates = find_dates(timepage)
-
-        intervals = find_intervals(timepage)
-
-        final_response = {
-            dates[0]: [intervals[1], intervals[3]],
-            dates[1]: [intervals[7], intervals[8]]
-        }
-        driver.quit()
-        cache_file(final_response)
-        return final_response
+        False
 
 
-if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        print("There was an error in retrieving data: {}".format(e))
+def fetch_data():
+    today = date.today().strftime("%d.%m")
+
+    creds = get_creds()
+    options = FirefoxOptions()
+    options.add_argument("--headless")  # Run Chrome in headless mode
+    driver = webdriver.Remote(
+        command_executor='http://selenium:4444/wd/hub', options=options)
+    driver.get(
+        'https://www.pre.cz/cs/moje-pre/neprihlaseny-uzivatel/prihlaseni-uzivatele/')
+    time.sleep(3)
+
+    timepage = get_timepage(driver, creds)
+    dates = find_dates(timepage)
+
+    intervals = find_intervals(timepage)
+
+    final_response = {
+        dates[0]: [intervals[1], intervals[3]],
+        dates[1]: [intervals[7], intervals[8]]
+    }
+    driver.quit()
+    cache_file(final_response)
+    return final_response
