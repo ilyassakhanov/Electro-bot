@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "my-app.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
       - name: wait-4-selenium
-        image: busybox
+        image: busybox:1.36
         command:
           - /bin/sh
           - -c
@@ -26,21 +26,17 @@ spec:
             done;
       containers:
       - name: {{ include "my-app.name" . }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          limits:
-            memory: "256Mi"
-            cpu: "250m"
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
           - name: creds
             mountPath: /creds
             readOnly: true
           - name: config
             mountPath: /config
-            readOnly: true 
+            readOnly: true
           - name: my-app-data
             mountPath: /app/data
       volumes:

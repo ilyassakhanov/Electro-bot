@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: my-app-config
-  namespace: my-app
+  name: {{ .Values.configMapName }}
+  namespace: {{ .Release.Namespace }}
 data:
   botname: {{ .Values.config.botname }}

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "my-app.selenium.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -17,24 +17,19 @@ spec:
       - name: selenium-firefox
         image: "{{ .Values.selenium.image.repository }}:{{ .Values.selenium.image.tag }}"
         resources:
-          limits:
-            memory: "1024Mi"
-            cpu: "400m"
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
+          {{- toYaml .Values.selenium.resources | nindent 10 }}
         ports:
         - containerPort: {{ .Values.selenium.service.port }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.selenium.service.name | default "selenium" }}
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.selenium.service.name }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     app: selenium
   ports:
   - protocol: TCP
-    port: {{ .Values.selenium.service.port }} # TODO maybe remove this variable, not needed
+    port: {{ .Values.selenium.service.port }}
     targetPort: {{ .Values.selenium.service.port }}

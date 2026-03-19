@@ -3,7 +3,7 @@
 {{- end -}}
 
 {{- define "my-app.fullname" -}}
-{{- printf "%s-%s" (include "my-app.name" .) .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name (include "my-app.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "my-app.selenium.fullname" -}}
