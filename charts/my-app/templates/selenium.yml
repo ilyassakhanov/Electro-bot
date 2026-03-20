@@ -3,15 +3,17 @@ kind: Deployment
 metadata:
   name: {{ include "my-app.selenium.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "my-app.selenium.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: selenium
+      {{- include "my-app.selenium.selectorLabels" . | nindent 6 }}
   replicas: {{ .Values.selenium.replicaCount | default 1 }}
   template:
     metadata:
       labels:
-        app: selenium
+        {{- include "my-app.selenium.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: selenium-firefox
@@ -26,9 +28,11 @@ kind: Service
 metadata:
   name: {{ .Values.selenium.service.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "my-app.selenium.labels" . | nindent 4 }}
 spec:
   selector:
-    app: selenium
+    {{- include "my-app.selenium.selectorLabels" . | nindent 4 }}
   ports:
   - protocol: TCP
     port: {{ .Values.selenium.service.port }}

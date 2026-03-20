@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.configMapName }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
 data:
   botname: {{ .Values.config.botname }}

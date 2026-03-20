@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.pvc.claimName }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.pvc.accessMode }}
